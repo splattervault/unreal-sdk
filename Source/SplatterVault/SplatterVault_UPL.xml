@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SplatterVault for Android:
+  - adds the Android Keystore helper (com.splattervault.sdk.SvKeystore) to the APK;
+  - keeps the SDK's Keystore-sealed secrets (files/splattervault/) out of Android Auto Backup and device transfer, unless
+    Project Settings > Plugins > SplatterVault > Exclude Secrets From Android Backup is off. When the manifest already
+    names its own backup rules, they are left alone and a build message says what to add to them.
+-->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+	<init>
+		<log text="SplatterVault: adding the Android Keystore helper for the token store."/>
+	</init>
+
+	<prebuildCopies>
+		<copyDir src="$S(PluginDir)/Java/com/splattervault/sdk" dst="$S(BuildDir)/src/com/splattervault/sdk" />
+	</prebuildCopies>
+
+	<resourceCopies>
+		<setBoolFromProperty result="bSvExcludeFromBackup" ini="Game" section="/Script/SplatterVault.SplatterVaultSettings" property="bExcludeSecretsFromAndroidBackup" default="true"/>
+		<if condition="bSvExcludeFromBackup">
+			<true>
+				<copyFile src="$S(PluginDir)/Android/res/xml/splattervault_backup_rules.xml" dst="$S(BuildDir)/res/xml/splattervault_backup_rules.xml" />
+				<copyFile src="$S(PluginDir)/Android/res/xml/splattervault_data_extraction_rules.xml" dst="$S(BuildDir)/res/xml/splattervault_data_extraction_rules.xml" />
+			</true>
+		</if>
+	</resourceCopies>
+
+	<androidManifestUpdates>
+		<setBoolFromProperty result="bSvExcludeFromBackup" ini="Game" section="/Script/SplatterVault.SplatterVaultSettings" property="bExcludeSecretsFromAndroidBackup" default="true"/>
+		<if condition="bSvExcludeFromBackup">
+			<true>
+				<loopElements tag="application">
+					<setStringFromAttribute result="svFullBackup" tag="$" name="android:fullBackupContent"/>
+					<setBoolIsEqual result="svNoFullBackup" arg1="$S(svFullBackup)" arg2=""/>
+					<if condition="svNoFullBackup">
+						<true>
+							<addAttribute tag="$" name="android:fullBackupContent" value="@xml/splattervault_backup_rules"/>
+						</true>
+						<false>
+							<log text="SplatterVault: android:fullBackupContent is already set; add &lt;exclude domain=&quot;file&quot; path=&quot;splattervault/&quot;/&gt; to those rules."/>
+						</false>
+					</if>
+					<setStringFromAttribute result="svExtraction" tag="$" name="android:dataExtractionRules"/>
+					<setBoolIsEqual result="svNoExtraction" arg1="$S(svExtraction)" arg2=""/>
+					<if condition="svNoExtraction">
+						<true>
+							<addAttribute tag="$" name="android:dataExtractionRules" value="@xml/splattervault_data_extraction_rules"/>
+						</true>
+						<false>
+							<log text="SplatterVault: android:dataExtractionRules is already set; exclude domain file, path splattervault/ in its cloud-backup and device-transfer sections."/>
+						</false>
+					</if>
+				</loopElements>
+			</true>
+		</if>
+	</androidManifestUpdates>
+
+	<proguardAdditions>
+		<insert>
+-keep class com.splattervault.sdk.SvKeystore {
+	public static *;
+}
+		</insert>
+	</proguardAdditions>
+</root>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SplatterVault: backup and device-transfer rules (Android 12+, android:dataExtractionRules). The SDK's Keystore-sealed
+  secrets (files/splattervault/) cannot be opened on another device, so they stay out of cloud backups and transfers.
+-->
+<data-extraction-rules>
+	<cloud-backup>
+		<exclude domain="file" path="splattervault/" />
+	</cloud-backup>
+	<device-transfer>
+		<exclude domain="file" path="splattervault/" />
+	</device-transfer>
+</data-extraction-rules>

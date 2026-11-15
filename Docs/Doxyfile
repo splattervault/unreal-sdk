@@ -1,0 +1,23 @@
+# Doxygen configuration for the SplatterVault Unreal plugin's API reference.
+# Run from the plugin root: doxygen Docs/Doxyfile  ->  Docs/api/html/index.html
+PROJECT_NAME           = "SplatterVault for Unreal Engine"
+PROJECT_NUMBER         = 0.1.0
+PROJECT_BRIEF          = "Player sign-in, player data and the store for Unreal Engine game clients"
+OUTPUT_DIRECTORY       = Docs/api
+INPUT                  = Source/SplatterVault/Public README.md
+USE_MDFILE_AS_MAINPAGE = README.md
+FILE_PATTERNS          = *.h *.md
+RECURSIVE              = YES
+EXTRACT_ALL            = NO
+EXTRACT_PRIVATE        = NO
+HIDE_UNDOC_MEMBERS     = NO
+JAVADOC_AUTOBRIEF      = YES
+MARKDOWN_SUPPORT       = YES
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             = "SPLATTERVAULT_API=" "UCLASS(x)=" "USTRUCT(x)=" "UENUM(x)=" "UPROPERTY(x)=" "UFUNCTION(x)=" "GENERATED_BODY()=" "PLATFORM_WINDOWS=1" "PLATFORM_ANDROID=1"
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = NO

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SplatterVault: Android Auto Backup rules (Android 6 to 11, android:fullBackupContent).
+  The SDK's secrets (files/splattervault/) are sealed with an Android Keystore key that never leaves this device: a
+  backup restored to another device cannot open them. They are left out of backups; everything else is backed up as
+  before. If your game has its own rules, add this exclude to them and turn off
+  Project Settings > Plugins > SplatterVault > Exclude Secrets From Android Backup.
+-->
+<full-backup-content>
+	<exclude domain="file" path="splattervault/" />
+</full-backup-content>
